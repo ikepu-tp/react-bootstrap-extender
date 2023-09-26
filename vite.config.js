@@ -1,5 +1,6 @@
 import { resolve } from 'path';
 import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react'
 
 export default defineConfig({
 	build: {
@@ -13,8 +14,25 @@ export default defineConfig({
 			},
 			formats: ["cjs", "esm"],
 		},
-		rollupOptions: {},
+		rollupOptions: {
+			external: [
+				"bootstrap",
+				"react",
+				"react-bootstrap",
+				"react-dom"
+			],
+			output: {
+				globals: {
+					bootstrap: "bootstrap",
+					"react": "React",
+					"react-bootstrap": "ReactBootstrap",
+				}
+			}
+		},
 		minify: false,
 		outDir: "./dist"
 	},
+	plugins: [
+		react()
+	]
 });
