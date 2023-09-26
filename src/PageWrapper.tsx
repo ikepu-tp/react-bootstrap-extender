@@ -19,7 +19,7 @@ export default function PageWrapper(props: PageWrapperProps): JSX.Element {
 					<Breadcrumb.Item href="/">HOME</Breadcrumb.Item>
 					{props.breadCrumb.map(
 						(item: BreadCrumbType): JSX.Element => (
-							<BreadcrumbItem key={item.text} item={item} />
+							<BreadcrumbItem key={item.text} item={item} onClick={props.breadCrumbOnClick} />
 						)
 					)}
 					<Breadcrumb.Item active>{props.title}</Breadcrumb.Item>
