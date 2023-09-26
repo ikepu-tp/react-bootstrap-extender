@@ -1,11 +1,11 @@
 import { Pagination } from 'react-bootstrap';
 import { PaginationMetaResource } from './ListView';
 
-export type PaginateType = {
+export type PaginateProps = {
 	setPage: (page: number) => void;
 	meta: PaginationMetaResource;
 };
-export default function Paginate(props: PaginateType): JSX.Element {
+export default function Paginate(props: PaginateProps): JSX.Element {
 	function toPrev(): void {
 		props.setPage(Math.max(props.meta.currentPage, 1));
 	}
