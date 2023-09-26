@@ -6,11 +6,12 @@ export default defineConfig({
 	build: {
 		lib: {
 			entry: {
-				"index": resolve(__dirname, "src/index.ts"),
+				"": resolve(__dirname, "src/index.ts"),
+				"Form": resolve(__dirname, "src/Form/index.ts"),
 			},
 			name: '@ikepu-tp/react-bootstrap-extender',
 			fileName: (format, entryName) => {
-				return `${format}/${entryName}.js`;
+				return `${format}/${entryName ? `${entryName}/` : ""}index.js`;
 			},
 			formats: ["cjs", "esm"],
 		},
