@@ -9,5 +9,5 @@ services:
       - 6006:6006
     volumes:
       - ./:/usr/src/app
-    command: sh -c "yarn storybook"
+    #command: sh -c "yarn storybook"
     stdin_open: true
