@@ -1,11 +1,10 @@
 import React from 'react';
 
-export default function Anchor(
-	props: React.DetailedHTMLProps<React.AnchorHTMLAttributes<HTMLAnchorElement>, HTMLAnchorElement> & {
-		as?: 'button';
-		variant?: 'primary' | 'secondary' | 'warning' | 'danger';
-	}
-): JSX.Element {
+export type AnchorProps = React.DetailedHTMLProps<React.AnchorHTMLAttributes<HTMLAnchorElement>, HTMLAnchorElement> & {
+	as?: 'button';
+	variant?: 'primary' | 'secondary' | 'warning' | 'danger';
+};
+export default function Anchor(props: AnchorProps): JSX.Element {
 	return (
 		<a
 			{...props}

@@ -11,6 +11,9 @@ export type ErrorResource = {
 	code?: number;
 	messages?: (string | { [s: string]: any })[];
 };
+export type ErrorMessagesProps = {
+	messages?: (string | { [s: string]: any })[] | (string | { [s: string]: any } | any);
+};
 export type FormWrapperProps = React.PropsWithChildren & {
 	onSubmit: (e: FormEvent<HTMLFormElement>) => Promise<ResponseResource>;
 	setButtonDisabled?: React.Dispatch<React.SetStateAction<boolean>>;
@@ -70,9 +73,6 @@ export default function FormWrapper(props: FormWrapperProps): JSX.Element {
 	);
 }
 
-export type ErrorMessagesProps = {
-	messages?: (string | { [s: string]: any })[] | (string | { [s: string]: any } | any);
-};
 export function ErrorMessages(props: ErrorMessagesProps): JSX.Element {
 	//配列
 	if (Array.isArray(props.messages))
