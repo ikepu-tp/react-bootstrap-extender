@@ -1,7 +1,7 @@
 {
   "name": "@ikepu-tp/react-bootstrap-extender",
   "type": "module",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
@@ -34,6 +34,11 @@
       "require": "./dist/cjs/index.js",
       "import": "./dist/esm/index.js",
       "types": "./dist/esm/index.d.ts"
+    },
+    "./Form": {
+      "require": "./dist/cjs/Form/index.js",
+      "import": "./dist/esm/Form/index.js",
+      "types": "./dist/esm/Form/index.d.ts"
     }
   },
   "dependencies": {

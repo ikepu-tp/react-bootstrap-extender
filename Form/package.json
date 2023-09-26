@@ -1,6 +1,6 @@
 {
   "name": "@ikepu-tp/react-bootstrap-extender/Form",
-  "main": "./dist/cjs/Form/index.js",
-  "module": "./dist/esm/Form/index.js",
-  "types": "./dist/esm/Form/index.d.ts"
+  "main": "./../dist/cjs/Form/index.js",
+  "module": "./../dist/esm/Form/index.js",
+  "types": "./../dist/esm/Form/index.d.ts"
 }
