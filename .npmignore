@@ -1,0 +1,6 @@
+src
+.*
+tsconfig.json
+vite.config.json
+yarn.lock
+docker-compose.yml
