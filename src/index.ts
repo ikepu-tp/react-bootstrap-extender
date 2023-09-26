@@ -7,5 +7,5 @@ export { default as Popup } from './Popup';
 export type { AnchorProps } from './Anchor';
 export type { PaginationMetaResource, PaginationResource, ListViewProps } from './ListView';
 export type { BreadCrumbType, PageWrapperProps } from './PageWrapper';
-export type { PaginateType } from './Paginate';
+export type { PaginateProps } from './Paginate';
 export type { PopupProps } from './Popup';
