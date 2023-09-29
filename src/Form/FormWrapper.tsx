@@ -1,5 +1,6 @@
 import React, { FormEvent, useEffect, useState } from 'react';
 import { Alert, Form } from 'react-bootstrap';
+import useForm, { FormContext } from './FormContext';
 
 export type ResponseResource<T = any> = {
 	payloads?: T;
@@ -9,7 +10,7 @@ export type ErrorResource = {
 	abstract?: string;
 	title?: string;
 	code?: number;
-	messages?: (string | { [s: string]: any })[];
+	messages?: (string | { [s: string]: any })[] | { [s: string]: any };
 };
 export type ErrorMessagesProps = {
 	messages?: (string | { [s: string]: any })[] | (string | { [s: string]: any } | any);
@@ -19,13 +20,16 @@ export type FormWrapperProps = React.PropsWithChildren & {
 	setButtonDisabled?: React.Dispatch<React.SetStateAction<boolean>>;
 	success?: (payloads: object | any) => void;
 	successMessage?: string;
+	successMessageTimeout?: number;
 	ErrorMessages?: (props: ErrorMessagesProps) => JSX.Element;
 };
 export default function FormWrapper(props: FormWrapperProps): JSX.Element {
 	const [Validated, setValidated] = useState<boolean>(false);
 	const [ButtonDisabled, setButtonDisabled] = useState<boolean>(false);
-	const [Error, setError] = useState<undefined | ErrorResource>(undefined);
+	//const [Error, setError] = useState<undefined | ErrorResource>(undefined);
 	const [Success, setSuccess] = useState<boolean>(false);
+
+	const Error = useForm();
 
 	useEffect(() => {
 		if (props.setButtonDisabled) props.setButtonDisabled(ButtonDisabled);
@@ -34,7 +38,7 @@ export default function FormWrapper(props: FormWrapperProps): JSX.Element {
 	async function onSubmit(e: FormEvent<HTMLFormElement>): Promise<void> {
 		e.preventDefault();
 		setButtonDisabled(true);
-		setError(undefined);
+		Error.changeError(undefined);
 		if (!e.currentTarget.checkValidity()) {
 			setValidated(true);
 			setButtonDisabled(false);
@@ -42,38 +46,43 @@ export default function FormWrapper(props: FormWrapperProps): JSX.Element {
 		}
 		setValidated(false);
 		const response: ResponseResource = await props.onSubmit(e);
-		if (response.error) setError({ ...response.error });
+		if (response.error) {
+			Error.changeError(response.error);
+			setValidated(true);
+		}
 		if (!response.error) {
 			setSuccess(true);
 			setTimeout(() => {
 				setSuccess(false);
-			}, 5000);
+			}, props.successMessageTimeout || 5000);
 		}
 		if (response.payloads && props.success) props.success(response.payloads);
 		setButtonDisabled(false);
 	}
 	return (
-		<Form noValidate validated={Validated} onSubmit={onSubmit}>
-			{Error && (
-				<Alert variant="warning">
-					<Alert.Heading>
-						{Error.abstract && <span>[{Error.abstract}]</span>}
-						{Error.title && <span>{Error.title}</span>}
-					</Alert.Heading>
-					{Error.messages && props.ErrorMessages ? (
-						<props.ErrorMessages messages={Error.messages} />
-					) : (
-						<ErrorMessages messages={ErrorMessages} />
-					)}
-				</Alert>
-			)}
-			{Success && <Alert variant="success">{props.successMessage || '処理に成功しました'}</Alert>}
-			{props.children}
-		</Form>
+		<FormContext.Provider value={Error}>
+			<Form noValidate validated={Validated} onSubmit={onSubmit}>
+				{Error.getError() && (
+					<Alert variant="warning">
+						<Alert.Heading>
+							{Error.getError('abstract') && <span>[{Error.getError('abstract')}]</span>}
+							{Error.getError('title') && <span>{Error.getError('title')}</span>}
+						</Alert.Heading>
+						{Error.getError('messages') && props.ErrorMessages ? (
+							<props.ErrorMessages messages={Error.getError('messages')} />
+						) : (
+							<ErrorMessages messages={Error.getError('messages')} ignoreObject />
+						)}
+					</Alert>
+				)}
+				{Success && <Alert variant="success">{props.successMessage || '処理に成功しました'}</Alert>}
+				{props.children}
+			</Form>
+		</FormContext.Provider>
 	);
 }
 
-export function ErrorMessages(props: ErrorMessagesProps): JSX.Element {
+export function ErrorMessages(props: ErrorMessagesProps & { ignoreObject?: boolean }): JSX.Element {
 	//配列
 	if (Array.isArray(props.messages))
 		return (
@@ -88,7 +97,8 @@ export function ErrorMessages(props: ErrorMessagesProps): JSX.Element {
 	//文字列
 	if (typeof props.messages === 'string' || props.messages instanceof String) return <li>{props.messages}</li>;
 	//オブジェクト
-	if (props.messages !== null && typeof props.messages === 'object')
+	if (props.messages !== null && typeof props.messages === 'object') {
+		if (props.ignoreObject) return <></>;
 		return (
 			<>
 				{Object.keys(props.messages).map(
@@ -98,6 +108,7 @@ export function ErrorMessages(props: ErrorMessagesProps): JSX.Element {
 				)}
 			</>
 		);
+	}
 	//その他
 	return <></>;
 }
