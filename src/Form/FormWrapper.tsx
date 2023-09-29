@@ -1,5 +1,6 @@
 import React, { FormEvent, useEffect, useState } from 'react';
 import { Alert, Form } from 'react-bootstrap';
+import useForm, { FormContext } from './FormContext';
 
 export type ResponseResource<T = any> = {
 	payloads?: T;
@@ -25,8 +26,10 @@ export type FormWrapperProps = React.PropsWithChildren & {
 export default function FormWrapper(props: FormWrapperProps): JSX.Element {
 	const [Validated, setValidated] = useState<boolean>(false);
 	const [ButtonDisabled, setButtonDisabled] = useState<boolean>(false);
-	const [Error, setError] = useState<undefined | ErrorResource>(undefined);
+	//const [Error, setError] = useState<undefined | ErrorResource>(undefined);
 	const [Success, setSuccess] = useState<boolean>(false);
+
+	const Error = useForm();
 
 	useEffect(() => {
 		if (props.setButtonDisabled) props.setButtonDisabled(ButtonDisabled);
@@ -35,7 +38,7 @@ export default function FormWrapper(props: FormWrapperProps): JSX.Element {
 	async function onSubmit(e: FormEvent<HTMLFormElement>): Promise<void> {
 		e.preventDefault();
 		setButtonDisabled(true);
-		setError(undefined);
+		Error.changeError(undefined);
 		if (!e.currentTarget.checkValidity()) {
 			setValidated(true);
 			setButtonDisabled(false);
@@ -43,7 +46,7 @@ export default function FormWrapper(props: FormWrapperProps): JSX.Element {
 		}
 		setValidated(false);
 		const response: ResponseResource = await props.onSubmit(e);
-		if (response.error) setError({ ...response.error });
+		if (response.error) Error.changeError(response.error);
 		if (!response.error) {
 			setSuccess(true);
 			setTimeout(() => {
@@ -54,23 +57,25 @@ export default function FormWrapper(props: FormWrapperProps): JSX.Element {
 		setButtonDisabled(false);
 	}
 	return (
-		<Form noValidate validated={Validated} onSubmit={onSubmit}>
-			{Error && (
-				<Alert variant="warning">
-					<Alert.Heading>
-						{Error.abstract && <span>[{Error.abstract}]</span>}
-						{Error.title && <span>{Error.title}</span>}
-					</Alert.Heading>
-					{Error.messages && props.ErrorMessages ? (
-						<props.ErrorMessages messages={Error.messages} />
-					) : (
-						<ErrorMessages messages={ErrorMessages} />
-					)}
-				</Alert>
-			)}
-			{Success && <Alert variant="success">{props.successMessage || '処理に成功しました'}</Alert>}
-			{props.children}
-		</Form>
+		<FormContext.Provider value={Error}>
+			<Form noValidate validated={Validated} onSubmit={onSubmit}>
+				{Error.getError() && (
+					<Alert variant="warning">
+						<Alert.Heading>
+							{Error.getError('abstract') && <span>[{Error.getError('abstract')}]</span>}
+							{Error.getError('title') && <span>{Error.getError('title')}</span>}
+						</Alert.Heading>
+						{Error.getError('messages') && props.ErrorMessages ? (
+							<props.ErrorMessages messages={Error.getError('messages')} />
+						) : (
+							<ErrorMessages messages={Error.getError('messages')} />
+						)}
+					</Alert>
+				)}
+				{Success && <Alert variant="success">{props.successMessage || '処理に成功しました'}</Alert>}
+				{props.children}
+			</Form>
+		</FormContext.Provider>
 	);
 }
 
