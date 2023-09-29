@@ -40,4 +40,4 @@ jobs:
           git branch sb-build-${{ env.RELEASED_VERSION }}
           git add ./sb-docs
           git commit -m "storybook build on ${{ env.RELEASED_VERSION }}"
-          git push -u origin sb-build-${{ env.RELEASED_VERSION }}
+          git push -u origin
