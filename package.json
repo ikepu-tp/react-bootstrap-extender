@@ -1,7 +1,7 @@
 {
   "name": "@ikepu-tp/react-bootstrap-extender",
   "type": "module",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
@@ -11,7 +11,7 @@
     "format": "prettier -w \"./src/**/*.{js,css,ts}\"",
     "build": "yarn format && vite build && tsc",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-sb": "storybook build -o sb-docs/"
   },
   "repository": {
     "type": "git",
@@ -56,6 +56,7 @@
     "@storybook/addon-links": "^7.4.5",
     "@storybook/addon-onboarding": "^1.0.8",
     "@storybook/blocks": "^7.4.5",
+    "@storybook/builder-vite": "^7.4.5",
     "@storybook/react": "^7.4.5",
     "@storybook/react-vite": "^7.4.5",
     "@storybook/testing-library": "^0.2.1",
