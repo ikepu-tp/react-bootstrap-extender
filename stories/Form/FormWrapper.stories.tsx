@@ -67,7 +67,7 @@ function FormWrapperComponent(props: {
 			successMessageTimeout={props.successMessageTimeout}
 		>
 			<InputWrapper label="項目1" required name="text">
-				<Form.Control type="text" />
+				<Form.Control type="text" placeholder="text" />
 			</InputWrapper>
 			<Button variant="primary" type="submit" disabled={ButtonDisabled}>
 				送信
