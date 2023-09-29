@@ -24,6 +24,11 @@ jobs:
         with:
           node-version: 18
 
+      - name: git config
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
+
       - name: install
         run: npm install
 
@@ -35,8 +40,6 @@ jobs:
 
       - name: git add
         run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git branch sb-build-${{ env.RELEASED_VERSION }}
           git add ./sb-docs
           git commit -m "storybook build on ${{ env.RELEASED_VERSION }}"
