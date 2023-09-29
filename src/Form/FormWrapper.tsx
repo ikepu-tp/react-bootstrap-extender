@@ -19,6 +19,7 @@ export type FormWrapperProps = React.PropsWithChildren & {
 	setButtonDisabled?: React.Dispatch<React.SetStateAction<boolean>>;
 	success?: (payloads: object | any) => void;
 	successMessage?: string;
+	successMessageTimeout?: number;
 	ErrorMessages?: (props: ErrorMessagesProps) => JSX.Element;
 };
 export default function FormWrapper(props: FormWrapperProps): JSX.Element {
@@ -47,7 +48,7 @@ export default function FormWrapper(props: FormWrapperProps): JSX.Element {
 			setSuccess(true);
 			setTimeout(() => {
 				setSuccess(false);
-			}, 5000);
+			}, props.successMessageTimeout || 5000);
 		}
 		if (response.payloads && props.success) props.success(response.payloads);
 		setButtonDisabled(false);

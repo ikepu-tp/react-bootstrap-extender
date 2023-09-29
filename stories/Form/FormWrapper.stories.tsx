@@ -16,16 +16,22 @@ type Story = StoryObj<typeof meta>;
 export const Normal: Story = {
 	args: {
 		successMessage: '処理に成功しました',
+		successMessageTimeout: 5000,
 	},
 };
 
-function FormWrapperComponent(props: { successMessage: string }): JSX.Element {
+function FormWrapperComponent(props: { successMessage: string; successMessageTimeout: number }): JSX.Element {
 	const [ButtonDisabled, setButtonDisabled] = useState<boolean>(false);
 	async function onSubmit(): Promise<ResponseResource> {
 		return {};
 	}
 	return (
-		<FormWrapper onSubmit={onSubmit} setButtonDisabled={setButtonDisabled} successMessage={props.successMessage}>
+		<FormWrapper
+			onSubmit={onSubmit}
+			setButtonDisabled={setButtonDisabled}
+			successMessage={props.successMessage}
+			successMessageTimeout={props.successMessageTimeout}
+		>
 			<Button variant="primary" type="submit" disabled={ButtonDisabled}>
 				送信
 			</Button>
