@@ -10,7 +10,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "format": "prettier -w \"./src/**/*.{js,css,ts}\"",
     "build": "yarn format && vite build && tsc",
-    "storybook": "storybook dev -p 6006",
+    "sb": "storybook dev -p 6006",
     "build-sb": "storybook build -o sb-docs/"
   },
   "repository": {
