@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { FormWrapper, ResponseResource } from './../../src/Form';
+import { FormWrapper, InputWrapper, ResponseResource } from './../../src/Form';
 import React, { useState } from 'react';
-import { Button } from 'react-bootstrap';
+import { Button, Form } from 'react-bootstrap';
 
 const meta = {
 	title: 'Forms/FormWrapper',
@@ -33,6 +33,22 @@ export const Error: Story = {
 		},
 	},
 };
+export const ValidationError: Story = {
+	args: {
+		successMessage: '処理に成功しました',
+		successMessageTimeout: 5000,
+		response: {
+			error: {
+				abstract: 'VALIDATION ERROR',
+				title: '入力内容エラー',
+				code: 406,
+				messages: {
+					text: ['必須項目です', '文字を入力してください'],
+				},
+			},
+		},
+	},
+};
 
 function FormWrapperComponent(props: {
 	successMessage: string;
@@ -50,6 +66,9 @@ function FormWrapperComponent(props: {
 			successMessage={props.successMessage}
 			successMessageTimeout={props.successMessageTimeout}
 		>
+			<InputWrapper label="項目1" required name="text">
+				<Form.Control type="text" />
+			</InputWrapper>
 			<Button variant="primary" type="submit" disabled={ButtonDisabled}>
 				送信
 			</Button>

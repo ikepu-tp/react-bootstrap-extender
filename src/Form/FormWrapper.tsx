@@ -10,7 +10,7 @@ export type ErrorResource = {
 	abstract?: string;
 	title?: string;
 	code?: number;
-	messages?: (string | { [s: string]: any })[];
+	messages?: (string | { [s: string]: any })[] | { [s: string]: any };
 };
 export type ErrorMessagesProps = {
 	messages?: (string | { [s: string]: any })[] | (string | { [s: string]: any } | any);
@@ -46,7 +46,10 @@ export default function FormWrapper(props: FormWrapperProps): JSX.Element {
 		}
 		setValidated(false);
 		const response: ResponseResource = await props.onSubmit(e);
-		if (response.error) Error.changeError(response.error);
+		if (response.error) {
+			Error.changeError(response.error);
+			setValidated(true);
+		}
 		if (!response.error) {
 			setSuccess(true);
 			setTimeout(() => {
@@ -68,7 +71,7 @@ export default function FormWrapper(props: FormWrapperProps): JSX.Element {
 						{Error.getError('messages') && props.ErrorMessages ? (
 							<props.ErrorMessages messages={Error.getError('messages')} />
 						) : (
-							<ErrorMessages messages={Error.getError('messages')} />
+							<ErrorMessages messages={Error.getError('messages')} ignoreObject />
 						)}
 					</Alert>
 				)}
@@ -79,7 +82,7 @@ export default function FormWrapper(props: FormWrapperProps): JSX.Element {
 	);
 }
 
-export function ErrorMessages(props: ErrorMessagesProps): JSX.Element {
+export function ErrorMessages(props: ErrorMessagesProps & { ignoreObject?: boolean }): JSX.Element {
 	//配列
 	if (Array.isArray(props.messages))
 		return (
@@ -94,7 +97,8 @@ export function ErrorMessages(props: ErrorMessagesProps): JSX.Element {
 	//文字列
 	if (typeof props.messages === 'string' || props.messages instanceof String) return <li>{props.messages}</li>;
 	//オブジェクト
-	if (props.messages !== null && typeof props.messages === 'object')
+	if (props.messages !== null && typeof props.messages === 'object') {
+		if (props.ignoreObject) return <></>;
 		return (
 			<>
 				{Object.keys(props.messages).map(
@@ -104,6 +108,7 @@ export function ErrorMessages(props: ErrorMessagesProps): JSX.Element {
 				)}
 			</>
 		);
+	}
 	//その他
 	return <></>;
 }
