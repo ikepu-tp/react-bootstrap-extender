@@ -25,8 +25,8 @@ export const Normal: Story = {
 			return {
 				meta: {
 					currentPage: page,
-					lastPage: page + 1,
-					length: page * 2,
+					lastPage: 5,
+					length: 50,
 					getLength: 10,
 					per: 10,
 				},
