@@ -14,10 +14,12 @@ type Story = StoryObj<typeof meta>;
 
 export const Normal: Story = {
 	args: {
-		getItems: async (params: { page?: number }) => {
+		getItems: async (params: { page?: number; per?: number }) => {
+			console.log(params);
 			const page = params.page || 1;
+			const per = params.per || 10;
 			const items: { name: string }[] = [];
-			for (let i = (page - 1) * 10 + 1; i <= page * 10; ++i) {
+			for (let i = (page - 1) * per + 1; i <= page * per; ++i) {
 				items.push({
 					name: `item${i}`,
 				});
@@ -26,9 +28,9 @@ export const Normal: Story = {
 				meta: {
 					currentPage: page,
 					lastPage: 5,
-					length: 50,
-					getLength: 10,
-					per: 10,
+					length: per * 5,
+					getLength: per,
+					per: per,
 				},
 				items: items,
 			};
