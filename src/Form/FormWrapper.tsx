@@ -6,11 +6,12 @@ export type ResponseResource<T = any> = {
 	payloads?: T;
 	error?: ErrorResource;
 };
+export type ErrorMessagesType = (string | { [s: string]: any })[] | { [s: string]: any } | string;
 export type ErrorResource = {
 	abstract?: string;
 	title?: string;
 	code?: number;
-	messages?: (string | { [s: string]: any })[] | { [s: string]: any };
+	messages?: ErrorMessagesType;
 };
 export type ErrorMessagesProps = {
 	messages?: (string | { [s: string]: any })[] | (string | { [s: string]: any } | any);
@@ -83,6 +84,7 @@ export default function FormWrapper(props: FormWrapperProps): JSX.Element {
 }
 
 export function ErrorMessages(props: ErrorMessagesProps & { ignoreObject?: boolean }): JSX.Element {
+	if (props.messages === undefined) return <></>;
 	//配列
 	if (Array.isArray(props.messages))
 		return (
@@ -100,13 +102,13 @@ export function ErrorMessages(props: ErrorMessagesProps & { ignoreObject?: boole
 	if (props.messages !== null && typeof props.messages === 'object') {
 		if (props.ignoreObject) return <></>;
 		return (
-			<>
+			<ul className="mb-0">
 				{Object.keys(props.messages).map(
 					(key: string, idx): JSX.Element => (
 						<ErrorMessages messages={props.messages[key]} key={`errorMessageObject-${idx}`} />
 					)
 				)}
-			</>
+			</ul>
 		);
 	}
 	//その他
