@@ -26,14 +26,14 @@ jobs:
 
       - name: git config
         run: |
-          git config --global user.name 'github-actions[bot]'
+          git config --global user.name 'ikepu-tp'
           git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
 
       - name: install
         run: npm install
 
       - name: build
-        run: npm run deploy
+        run: npm run build-sb
 
       - name: set version
         run: node -p -e '`RELEASED_VERSION=v${require("./package.json").version}`' >> $GITHUB_ENV
