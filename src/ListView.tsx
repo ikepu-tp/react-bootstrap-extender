@@ -44,7 +44,7 @@ export default function ListView(props: ListViewProps): JSX.Element {
 		const payloads = await props.getItems({ page: Page, ...Filter });
 		if (!payloads) return;
 		setPayloads({ ...{}, ...payloads });
-		window.scroll({ top: WrapperRef.current.getBoundingClientRect().top + window.pageYOffset });
+		if (WrapperRef.current) window.scroll({ top: WrapperRef.current.getBoundingClientRect().top + window.pageYOffset });
 	}
 	if (!Payloads) return <></>;
 	return (
