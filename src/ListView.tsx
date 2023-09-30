@@ -24,32 +24,25 @@ export type ListViewProps<ItemProps = any, ItemResource = any, Filter = FilterTy
 	itemWrapper: any;
 	itemCallback: (value: object | any, index: number, array: object[]) => JSX.Element;
 	reload?: string;
-	filter?: Filter | FilterType;
+	filter?: Filter & FilterType;
+	ConvertFilter?: (Filter: Filter) => string[];
 };
 export default function ListView(props: ListViewProps): JSX.Element {
 	const [Page, setPage] = useState<number>(1);
 	const [Payloads, setPayloads] = useState<PaginationResource | undefined>();
-	const [Filter, setFilter] = useState<FilterType | typeof props.filter>({
+	const [Filter, setFilter] = useState<FilterType & typeof props.filter>({
 		...{},
 		...(props.filter || { per: 10, order: 'asc' }),
 	});
 
 	useEffect(() => {
 		getItems();
-	}, [Page, props.reload]);
+	}, [Page, props.reload, Filter]);
+
 	async function getItems(): Promise<void> {
 		const payloads = await props.getItems({ page: Page, ...Filter });
 		if (!payloads) return;
 		setPayloads({ ...{}, ...payloads });
-	}
-	function changeFilter(key: keyof (FilterType | typeof props.filter), value: string | number | undefined) {
-		if (Filter === undefined) return;
-		if (value === undefined) {
-			if (Filter[key]) delete Filter[key];
-		} else {
-			Filter[key] = value as never;
-		}
-		setFilter({ ...{}, ...Filter });
 	}
 	if (!Payloads) return <></>;
 	return (
@@ -58,9 +51,13 @@ export default function ListView(props: ListViewProps): JSX.Element {
 				<Row className="justify-content-between">
 					<Col xs="auto" sm="auto" className="mt-2">
 						{Payloads.meta.length}件中{Payloads.meta.getLength}件表示中
+						<div className="text-muted" style={{ fontSize: '.75em' }}>
+							検索条件：
+							{(props.ConvertFilter ? props.ConvertFilter(Filter) : ConvertFilter(Filter)).join(',')}
+						</div>
 					</Col>
 					<Col xs="auto" sm="auto" className="mt-2">
-						<FilterElement Filter={Filter} changeFilter={changeFilter} update={getItems} />
+						<FilterElement Filter={Filter || {}} setFilter={setFilter} />
 					</Col>
 				</Row>
 			</div>
@@ -71,22 +68,57 @@ export default function ListView(props: ListViewProps): JSX.Element {
 		</>
 	);
 }
+function ConvertFilter(
+	Filter: FilterType,
+	key_JP: { [s: string]: string } = {
+		per: '取得件数',
+		keyword: 'キーワード',
+		order: '表示順序',
+	},
+	key_res: { [s: string]: string | { [s: string]: string } } = {
+		per: '$$件',
+		keyword: '$$',
+		order: {
+			asc: '昇順',
+			desc: '降順',
+		},
+	}
+): string[] {
+	const filters: string[] = [];
+	Object.keys(Filter).forEach((key: string): void => {
+		const key_filter: keyof FilterType = key as keyof FilterType;
+		if (!key_JP[key] || !key_res[key]) return;
+		let res: string = `${key_JP[key]}`;
+		if (key_res[key][Filter[key_filter] as never]) {
+			res += `（${key_res[key][Filter[key_filter] as never]}）`;
+		} else {
+			res += `（${(key_res[key] as string).replace('$$', Filter[key_filter] as string)}）`;
+		}
+		filters.push(res);
+	});
+	return filters;
+}
 function FilterElement(props: {
 	Filter: FilterType;
-	changeFilter: (key: keyof FilterType, value: string | number | undefined) => void;
-	update: () => Promise<void> | void;
+	setFilter: React.Dispatch<React.SetStateAction<FilterType>>;
 }): JSX.Element {
 	const [FilterShow, setFilterShow] = useState<boolean>(false);
+	const [Filter, setFilter] = useState<FilterType>({ ...{}, ...props.Filter });
 
 	function changeFilterShow(): void {
 		setFilterShow(!FilterShow);
 	}
-	function onChangeFilter(e: ChangeEvent<HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement>): void {
-		props.changeFilter(e.currentTarget.name as keyof FilterType, e.currentTarget.value);
+	function onChangeFilterStr(e: ChangeEvent<HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement>): void {
+		Filter[e.currentTarget.name as keyof FilterType] = e.currentTarget.value;
+		setFilter({ ...{}, ...Filter });
+	}
+	function onChangeFilterNum(e: ChangeEvent<HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement>): void {
+		Filter[e.currentTarget.name as keyof FilterType] = Number(e.currentTarget.value);
+		setFilter({ ...{}, ...Filter });
 	}
 	function onClickUpdate(): void {
 		changeFilterShow();
-		props.update();
+		props.setFilter({ ...{}, ...Filter });
 	}
 	return (
 		<OverlayTrigger
@@ -103,7 +135,7 @@ function FilterElement(props: {
 								<Row>
 									<Col>
 										<InputWrapper label="表示件数">
-											<Form.Select name="per" value={props.Filter['per'] || 10} onChange={onChangeFilter}>
+											<Form.Select name="per" value={Filter['per'] || 10} onChange={onChangeFilterNum}>
 												<option value="10">10</option>
 												<option value="50">50</option>
 												<option value="100">100</option>
@@ -112,9 +144,9 @@ function FilterElement(props: {
 									</Col>
 									<Col>
 										<InputWrapper label="表示順序">
-											<Form.Select name="order" value={props.Filter['order'] || 'asc'} onChange={onChangeFilter}>
-												<option value="asc">降順</option>
-												<option value="desc">昇順</option>
+											<Form.Select name="order" value={Filter['order'] || 'asc'} onChange={onChangeFilterStr}>
+												<option value="asc">昇順</option>
+												<option value="desc">降順</option>
 											</Form.Select>
 										</InputWrapper>
 									</Col>
@@ -125,8 +157,8 @@ function FilterElement(props: {
 									label="キーワード"
 									type="search"
 									name="keyword"
-									value={props.Filter['keyword'] || ''}
-									onChange={onChangeFilter}
+									value={Filter['keyword'] || ''}
+									onChange={onChangeFilterStr}
 								/>
 							</Col>
 						</Row>
