@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import Paginate from './Paginate';
 import { Button, Col, Form, OverlayTrigger, Popover, Row } from 'react-bootstrap';
 import { Control, InputWrapper } from './Form';
@@ -34,6 +34,7 @@ export default function ListView(props: ListViewProps): JSX.Element {
 		...{},
 		...(props.filter || { per: 10, order: 'asc' }),
 	});
+	const WrapperRef = useRef<HTMLDivElement>(null!);
 
 	useEffect(() => {
 		getItems();
@@ -43,11 +44,12 @@ export default function ListView(props: ListViewProps): JSX.Element {
 		const payloads = await props.getItems({ page: Page, ...Filter });
 		if (!payloads) return;
 		setPayloads({ ...{}, ...payloads });
+		window.scroll({ top: WrapperRef.current.getBoundingClientRect().top + window.pageYOffset });
 	}
 	if (!Payloads) return <></>;
 	return (
 		<>
-			<div className="mb-2">
+			<div className="mb-2" ref={WrapperRef}>
 				<Row className="justify-content-between">
 					<Col xs="auto" sm="auto" className="mt-2">
 						{Payloads.meta.length}件中{Payloads.meta.getLength}件表示中
