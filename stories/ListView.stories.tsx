@@ -15,7 +15,6 @@ type Story = StoryObj<typeof meta>;
 export const Normal: Story = {
 	args: {
 		getItems: async (params: { page?: number; per?: number }) => {
-			console.log(params);
 			const page = params.page || 1;
 			const per = params.per || 10;
 			const items: { name: string }[] = [];
