@@ -5,6 +5,7 @@ import { ErrorMessages } from './FormWrapper';
 
 export type InputWrapperProps = React.PropsWithChildren & {
 	label: string;
+	description?: React.ReactNode;
 	required?: boolean;
 	name?: string;
 	feedbackMessage?: boolean;
@@ -14,11 +15,12 @@ export default function InputWrapper(props: InputWrapperProps): JSX.Element {
 	const formContext = useContext(FormContext);
 	return (
 		<div className={'mb-2 ' + props.className}>
-			<Form.Label>
+			<Form.Label className="mb-1">
 				{props.label}
 				{props.required && <span className="text-danger">＊</span>}
 			</Form.Label>
-			<div className="ms-2">{props.children}</div>
+			<Form.Text className="mb-2 ps-2 d-block">{props.description}</Form.Text>
+			{props.children}
 			{props.feedbackMessage &&
 				props.name &&
 				formContext.getError('messages') &&
