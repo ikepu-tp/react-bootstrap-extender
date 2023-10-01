@@ -17,6 +17,7 @@ export const Normal: Story = {
 		label: '名前',
 		required: true,
 		name: 'name',
+		countShow: false,
 	},
 };
 export const ValidMessage: Story = {
@@ -26,6 +27,7 @@ export const ValidMessage: Story = {
 		name: 'name',
 		validMessage: ['フィードバック'],
 		isValid: true,
+		countShow: false,
 	},
 };
 export const InvalidMessage: Story = {
@@ -35,6 +37,16 @@ export const InvalidMessage: Story = {
 		name: 'name',
 		invalidMessage: ['フィードバック'],
 		isInvalid: true,
+		countShow: false,
+	},
+};
+export const CountShow: Story = {
+	args: {
+		label: '名前',
+		required: true,
+		name: 'name',
+		countShow: true,
+		maxLength: 50,
 	},
 };
 export const BeforeText: Story = {
@@ -50,6 +62,18 @@ export const AfterText: Story = {
 		label: '名前',
 		required: true,
 		name: 'name',
+		afterText: ['Controlの後に', <span className="text-danger">要素を入れられます</span>],
+	},
+};
+export const TextArea: Story = {
+	args: {
+		as: 'textarea',
+		label: '備考',
+		required: true,
+		name: 'note',
+		countShow: true,
+		maxLength: 50,
+		beforeText: ['Controlの前に', <span className="text-danger">要素を入れられます</span>],
 		afterText: ['Controlの後に', <span className="text-danger">要素を入れられます</span>],
 	},
 };

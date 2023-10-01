@@ -1,6 +1,6 @@
 import { Form, FormControlProps, InputGroup } from 'react-bootstrap';
 import InputWrapper from './InputWrapper';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { ChangeEvent, useContext, useEffect, useState } from 'react';
 import { FormContext } from './FormContext';
 import { ErrorMessages, ErrorMessagesType } from './FormWrapper';
 
@@ -12,6 +12,7 @@ export type ControlProps = React.DetailedHTMLProps<React.InputHTMLAttributes<HTM
 		beforeText?: React.ReactNode[] | React.ReactNode;
 		afterText?: React.ReactNode[] | React.ReactNode;
 		wrapperClassName?: string;
+		countShow?: boolean;
 	};
 export default function Control({
 	label,
@@ -20,9 +21,12 @@ export default function Control({
 	beforeText,
 	afterText,
 	wrapperClassName,
+	onChange,
+	countShow = true,
 	...props
 }: ControlProps): JSX.Element {
 	const [Messages, setMessages] = useState<undefined | ErrorMessagesType>();
+	const [Count, setCount] = useState<number>((props.value?.toString || props.defaultValue?.toString || '').length);
 	const formContext = useContext(FormContext);
 
 	useEffect(() => {
@@ -37,6 +41,11 @@ export default function Control({
 			setMessages(undefined);
 		}
 	}, [formContext.getError('messages')]);
+
+	function onChangeInput(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void {
+		setCount(e.currentTarget.value.length);
+		if (onChange) onChange(e);
+	}
 	return (
 		<InputWrapper
 			label={label}
@@ -57,6 +66,7 @@ export default function Control({
 					placeholder={props.placeholder || label}
 					isInvalid={props.isInvalid || (Messages ? true : false)}
 					className={(props.className || '') + (props.isInvalid || (Messages ? true : false) ? ' border-danger' : '')}
+					onChange={onChangeInput}
 				/>
 				{validMessage && (
 					<Form.Control.Feedback className="ms-2">
@@ -88,6 +98,12 @@ export default function Control({
 						<InputGroup.Text>{afterText}</InputGroup.Text>
 					))}
 			</InputGroup>
+			{countShow && (
+				<Form.Text className="d-block text-end">
+					{Count}
+					{props.maxLength && `/${props.maxLength}`}words
+				</Form.Text>
+			)}
 		</InputWrapper>
 	);
 }
