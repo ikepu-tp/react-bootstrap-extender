@@ -18,5 +18,6 @@ export const Normal: Story = {
 		label: '項目1',
 		required: true,
 		children: <Form.Control type="text" placeholder="テキスト..." />,
+		description: 'description',
 	},
 };
