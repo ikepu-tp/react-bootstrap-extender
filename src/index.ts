@@ -9,3 +9,7 @@ export type { PaginationMetaResource, PaginationResource, ListViewProps } from '
 export type { BreadCrumbType, PageWrapperProps } from './PageWrapper';
 export type { PaginateProps } from './Paginate';
 export type { PopupProps } from './Popup';
+
+export function createKey(): string {
+	return Math.random().toString(32).substring(2);
+}
