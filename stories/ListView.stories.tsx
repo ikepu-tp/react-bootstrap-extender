@@ -36,5 +36,9 @@ export const Normal: Story = {
 		},
 		itemWrapper: 'ul',
 		itemCallback: (item, idx) => <li key={idx}>{item['name']}</li>,
+		FilterProps: {
+			children: 'child filter',
+			except: ['keyword'],
+		},
 	},
 };
