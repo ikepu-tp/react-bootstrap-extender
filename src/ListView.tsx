@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, PropsWithChildren, useEffect, useRef, useState } from 'react';
 import Paginate from './Paginate';
 import { Button, Col, Form, OverlayTrigger, Popover, Row } from 'react-bootstrap';
 import { Control, InputWrapper } from './Form';
@@ -19,6 +19,10 @@ export type FilterType = {
 	keyword?: number | string;
 	order?: number | string | 'asc' | 'desc';
 };
+export type FilterProps = PropsWithChildren & {
+	except?: keyof FilterType | (keyof FilterType)[];
+	only?: keyof FilterType | (keyof FilterType)[];
+};
 export type ListViewProps<ItemProps = any, ItemResource = any, Filter = FilterType> = {
 	getItems: (props: ItemProps) => Promise<PaginationResource<ItemResource> | false>;
 	itemWrapper: any;
@@ -26,6 +30,7 @@ export type ListViewProps<ItemProps = any, ItemResource = any, Filter = FilterTy
 	reload?: string;
 	filter?: Filter & FilterType;
 	ConvertFilter?: (Filter: Filter) => string[];
+	FilterProps?: FilterProps;
 };
 export default function ListView(props: ListViewProps): JSX.Element {
 	const [Page, setPage] = useState<number>(1);
@@ -59,7 +64,7 @@ export default function ListView(props: ListViewProps): JSX.Element {
 						</div>
 					</Col>
 					<Col xs="auto" sm="auto" className="mt-2">
-						<FilterElement Filter={Filter || {}} setFilter={setFilter} />
+						<FilterElement Filter={Filter || {}} setFilter={setFilter} {...props.FilterProps} />
 					</Col>
 				</Row>
 			</div>
@@ -100,10 +105,12 @@ function ConvertFilter(
 	});
 	return filters;
 }
-function FilterElement(props: {
-	Filter: FilterType;
-	setFilter: React.Dispatch<React.SetStateAction<FilterType>>;
-}): JSX.Element {
+function FilterElement(
+	props: FilterProps & {
+		Filter: FilterType;
+		setFilter: React.Dispatch<React.SetStateAction<FilterType>>;
+	}
+): JSX.Element {
 	const [FilterShow, setFilterShow] = useState<boolean>(false);
 	const [Filter, setFilter] = useState<FilterType>({ ...{}, ...props.Filter });
 
@@ -161,9 +168,11 @@ function FilterElement(props: {
 									name="keyword"
 									value={Filter['keyword'] || ''}
 									onChange={onChangeFilterStr}
+									countShow={false}
 								/>
 							</Col>
 						</Row>
+						{props.children}
 						<Row className="justify-content-end">
 							<Col sm="auto" className="mt-1">
 								<Button variant="primary" type="button" onClick={onClickUpdate}>
