@@ -19,9 +19,10 @@ export type FilterType = {
 	keyword?: number | string;
 	order?: number | string | 'asc' | 'desc';
 };
+export const FilterInit: FilterType = { per: 10, order: 'asc', keyword: '' };
 export type FilterProps = PropsWithChildren & {
-	except?: keyof FilterType | (keyof FilterType)[];
-	only?: keyof FilterType | (keyof FilterType)[];
+	except?: (keyof FilterType)[];
+	only?: (keyof FilterType)[];
 };
 export type ListViewProps<ItemProps = any, ItemResource = any, Filter = FilterType> = {
 	getItems: (props: ItemProps) => Promise<PaginationResource<ItemResource> | false>;
@@ -37,7 +38,7 @@ export default function ListView(props: ListViewProps): JSX.Element {
 	const [Payloads, setPayloads] = useState<PaginationResource | undefined>();
 	const [Filter, setFilter] = useState<FilterType & typeof props.filter>({
 		...{},
-		...(props.filter || { per: 10, order: 'asc' }),
+		...(props.filter || { ...{}, ...FilterInit }),
 	});
 	const WrapperRef = useRef<HTMLDivElement>(null!);
 
@@ -113,16 +114,34 @@ function FilterElement(
 ): JSX.Element {
 	const [FilterShow, setFilterShow] = useState<boolean>(false);
 	const [Filter, setFilter] = useState<FilterType>({ ...{}, ...props.Filter });
+	const [FilterCan, setFilterCan] = useState<(keyof FilterType)[]>([]);
 
+	useEffect(() => {
+		let only: (keyof FilterType)[] = props.only || (Object.keys(FilterInit) as (keyof FilterType)[]);
+		only = only.filter((value: keyof FilterType): boolean => {
+			return (props.except || []).indexOf(value) === -1;
+		});
+		setFilterCan(only.concat([]));
+	}, []);
 	function changeFilterShow(): void {
 		setFilterShow(!FilterShow);
 	}
 	function onChangeFilterStr(e: ChangeEvent<HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement>): void {
-		Filter[e.currentTarget.name as keyof FilterType] = e.currentTarget.value;
+		const key = e.currentTarget.name as keyof FilterType;
+		if (e.currentTarget.value === '') {
+			if (Filter[key]) delete Filter[key];
+		} else {
+			Filter[key] = e.currentTarget.value;
+		}
 		setFilter({ ...{}, ...Filter });
 	}
 	function onChangeFilterNum(e: ChangeEvent<HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement>): void {
-		Filter[e.currentTarget.name as keyof FilterType] = Number(e.currentTarget.value);
+		const key = e.currentTarget.name as keyof FilterType;
+		if (e.currentTarget.value === '') {
+			if (Filter[key]) delete Filter[key];
+		} else {
+			Filter[key] = Number(e.currentTarget.value);
+		}
 		setFilter({ ...{}, ...Filter });
 	}
 	function onClickUpdate(): void {
@@ -140,37 +159,39 @@ function FilterElement(
 					<Popover.Header>絞り込み</Popover.Header>
 					<Popover.Body className="w-100">
 						<Row>
-							<Col sm="auto" className="mt-1">
-								<Row>
-									<Col>
-										<InputWrapper label="表示件数">
-											<Form.Select name="per" value={Filter['per'] || 10} onChange={onChangeFilterNum}>
-												<option value="10">10</option>
-												<option value="50">50</option>
-												<option value="100">100</option>
-											</Form.Select>
-										</InputWrapper>
-									</Col>
-									<Col>
-										<InputWrapper label="表示順序">
-											<Form.Select name="order" value={Filter['order'] || 'asc'} onChange={onChangeFilterStr}>
-												<option value="asc">昇順</option>
-												<option value="desc">降順</option>
-											</Form.Select>
-										</InputWrapper>
-									</Col>
-								</Row>
-							</Col>
-							<Col sm="auto" className="mt-1">
-								<Control
-									label="キーワード"
-									type="search"
-									name="keyword"
-									value={Filter['keyword'] || ''}
-									onChange={onChangeFilterStr}
-									countShow={false}
-								/>
-							</Col>
+							{FilterCan.indexOf('per') > -1 && (
+								<Col sm="auto" className="mt-1">
+									<InputWrapper label="表示件数">
+										<Form.Select name="per" value={Filter['per'] || 10} onChange={onChangeFilterNum}>
+											<option value="10">10</option>
+											<option value="50">50</option>
+											<option value="100">100</option>
+										</Form.Select>
+									</InputWrapper>
+								</Col>
+							)}
+							{FilterCan.indexOf('order') > -1 && (
+								<Col sm="auto" className="mt-1">
+									<InputWrapper label="表示順序">
+										<Form.Select name="order" value={Filter['order'] || 'asc'} onChange={onChangeFilterStr}>
+											<option value="asc">昇順</option>
+											<option value="desc">降順</option>
+										</Form.Select>
+									</InputWrapper>
+								</Col>
+							)}
+							{FilterCan.indexOf('keyword') > -1 && (
+								<Col sm="auto" className="mt-1">
+									<Control
+										label="キーワード"
+										type="search"
+										name="keyword"
+										value={Filter['keyword'] || ''}
+										onChange={onChangeFilterStr}
+										countShow={false}
+									/>
+								</Col>
+							)}
 						</Row>
 						{props.children}
 						<Row className="justify-content-end">
