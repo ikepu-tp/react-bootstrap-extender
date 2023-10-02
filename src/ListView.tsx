@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, PropsWithChildren, useEffect, useRef, useState } from 'react';
 import Paginate from './Paginate';
 import { Button, Col, Form, OverlayTrigger, Popover, Row } from 'react-bootstrap';
 import { Control, InputWrapper } from './Form';
@@ -19,6 +19,11 @@ export type FilterType = {
 	keyword?: number | string;
 	order?: number | string | 'asc' | 'desc';
 };
+export const FilterInit: FilterType = { per: 10, order: 'asc', keyword: '' };
+export type FilterProps = PropsWithChildren & {
+	except?: (keyof FilterType)[];
+	only?: (keyof FilterType)[];
+};
 export type ListViewProps<ItemProps = any, ItemResource = any, Filter = FilterType> = {
 	getItems: (props: ItemProps) => Promise<PaginationResource<ItemResource> | false>;
 	itemWrapper: any;
@@ -26,13 +31,14 @@ export type ListViewProps<ItemProps = any, ItemResource = any, Filter = FilterTy
 	reload?: string;
 	filter?: Filter & FilterType;
 	ConvertFilter?: (Filter: Filter) => string[];
+	FilterProps?: FilterProps;
 };
 export default function ListView(props: ListViewProps): JSX.Element {
 	const [Page, setPage] = useState<number>(1);
 	const [Payloads, setPayloads] = useState<PaginationResource | undefined>();
 	const [Filter, setFilter] = useState<FilterType & typeof props.filter>({
 		...{},
-		...(props.filter || { per: 10, order: 'asc' }),
+		...(props.filter || { ...{}, ...FilterInit }),
 	});
 	const WrapperRef = useRef<HTMLDivElement>(null!);
 
@@ -59,7 +65,7 @@ export default function ListView(props: ListViewProps): JSX.Element {
 						</div>
 					</Col>
 					<Col xs="auto" sm="auto" className="mt-2">
-						<FilterElement Filter={Filter || {}} setFilter={setFilter} />
+						<FilterElement Filter={Filter || {}} setFilter={setFilter} {...props.FilterProps} />
 					</Col>
 				</Row>
 			</div>
@@ -100,22 +106,42 @@ function ConvertFilter(
 	});
 	return filters;
 }
-function FilterElement(props: {
-	Filter: FilterType;
-	setFilter: React.Dispatch<React.SetStateAction<FilterType>>;
-}): JSX.Element {
+function FilterElement(
+	props: FilterProps & {
+		Filter: FilterType;
+		setFilter: React.Dispatch<React.SetStateAction<FilterType>>;
+	}
+): JSX.Element {
 	const [FilterShow, setFilterShow] = useState<boolean>(false);
 	const [Filter, setFilter] = useState<FilterType>({ ...{}, ...props.Filter });
+	const [FilterCan, setFilterCan] = useState<(keyof FilterType)[]>([]);
 
+	useEffect(() => {
+		let only: (keyof FilterType)[] = props.only || (Object.keys(FilterInit) as (keyof FilterType)[]);
+		only = only.filter((value: keyof FilterType): boolean => {
+			return (props.except || []).indexOf(value) === -1;
+		});
+		setFilterCan(only.concat([]));
+	}, []);
 	function changeFilterShow(): void {
 		setFilterShow(!FilterShow);
 	}
 	function onChangeFilterStr(e: ChangeEvent<HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement>): void {
-		Filter[e.currentTarget.name as keyof FilterType] = e.currentTarget.value;
+		const key = e.currentTarget.name as keyof FilterType;
+		if (e.currentTarget.value === '') {
+			if (Filter[key]) delete Filter[key];
+		} else {
+			Filter[key] = e.currentTarget.value;
+		}
 		setFilter({ ...{}, ...Filter });
 	}
 	function onChangeFilterNum(e: ChangeEvent<HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement>): void {
-		Filter[e.currentTarget.name as keyof FilterType] = Number(e.currentTarget.value);
+		const key = e.currentTarget.name as keyof FilterType;
+		if (e.currentTarget.value === '') {
+			if (Filter[key]) delete Filter[key];
+		} else {
+			Filter[key] = Number(e.currentTarget.value);
+		}
 		setFilter({ ...{}, ...Filter });
 	}
 	function onClickUpdate(): void {
@@ -133,37 +159,41 @@ function FilterElement(props: {
 					<Popover.Header>絞り込み</Popover.Header>
 					<Popover.Body className="w-100">
 						<Row>
-							<Col sm="auto" className="mt-1">
-								<Row>
-									<Col>
-										<InputWrapper label="表示件数">
-											<Form.Select name="per" value={Filter['per'] || 10} onChange={onChangeFilterNum}>
-												<option value="10">10</option>
-												<option value="50">50</option>
-												<option value="100">100</option>
-											</Form.Select>
-										</InputWrapper>
-									</Col>
-									<Col>
-										<InputWrapper label="表示順序">
-											<Form.Select name="order" value={Filter['order'] || 'asc'} onChange={onChangeFilterStr}>
-												<option value="asc">昇順</option>
-												<option value="desc">降順</option>
-											</Form.Select>
-										</InputWrapper>
-									</Col>
-								</Row>
-							</Col>
-							<Col sm="auto" className="mt-1">
-								<Control
-									label="キーワード"
-									type="search"
-									name="keyword"
-									value={Filter['keyword'] || ''}
-									onChange={onChangeFilterStr}
-								/>
-							</Col>
+							{FilterCan.indexOf('per') > -1 && (
+								<Col sm="auto" className="mt-1">
+									<InputWrapper label="表示件数">
+										<Form.Select name="per" value={Filter['per'] || 10} onChange={onChangeFilterNum}>
+											<option value="10">10</option>
+											<option value="50">50</option>
+											<option value="100">100</option>
+										</Form.Select>
+									</InputWrapper>
+								</Col>
+							)}
+							{FilterCan.indexOf('order') > -1 && (
+								<Col sm="auto" className="mt-1">
+									<InputWrapper label="表示順序">
+										<Form.Select name="order" value={Filter['order'] || 'asc'} onChange={onChangeFilterStr}>
+											<option value="asc">昇順</option>
+											<option value="desc">降順</option>
+										</Form.Select>
+									</InputWrapper>
+								</Col>
+							)}
+							{FilterCan.indexOf('keyword') > -1 && (
+								<Col sm="auto" className="mt-1">
+									<Control
+										label="キーワード"
+										type="search"
+										name="keyword"
+										value={Filter['keyword'] || ''}
+										onChange={onChangeFilterStr}
+										countShow={false}
+									/>
+								</Col>
+							)}
 						</Row>
+						{props.children}
 						<Row className="justify-content-end">
 							<Col sm="auto" className="mt-1">
 								<Button variant="primary" type="button" onClick={onClickUpdate}>
