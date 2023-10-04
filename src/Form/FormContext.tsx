@@ -16,7 +16,7 @@ export default function useForm(): FormContextType {
 		if (key === undefined) return ErrorR;
 		if (ErrorR === undefined) return ErrorR;
 		if (ErrorR[key]) return ErrorR[key];
-		throw new Error('Unexpected.');
+		return undefined;
 	}
 	function changeError(error: undefined | ErrorResource = undefined): void {
 		setError(error === undefined ? undefined : { ...{}, ...error });
