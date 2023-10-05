@@ -89,9 +89,12 @@ export default function Control({
 							)}
 						</ul>
 					)}
-					{formContext.getError('messages') && props.name && formContext.getError('messages')[props.name] && (
-						<ErrorMessages messages={formContext.getError('messages')[props.name]} />
-					)}
+					{formContext.Error?.messages &&
+						props.name &&
+						!Array.isArray(formContext.Error.messages) &&
+						formContext.Error.messages[props.name] && (
+							<ErrorMessages messages={formContext.Error.messages[props.name]} />
+						)}
 				</Form.Control.Feedback>
 				{afterText &&
 					(Array.isArray(afterText) ? (

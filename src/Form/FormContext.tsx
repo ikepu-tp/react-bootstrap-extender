@@ -2,6 +2,7 @@ import { createContext, useState } from 'react';
 import { ErrorResource } from './FormWrapper';
 
 export type FormContextType = {
+	Error?: ErrorResource;
 	getError: (key?: keyof ErrorResource) => undefined | ErrorResource | any;
 	changeError: (error: undefined | ErrorResource) => void;
 };
@@ -22,6 +23,7 @@ export default function useForm(): FormContextType {
 		setError(error === undefined ? undefined : { ...{}, ...error });
 	}
 	return {
+		Error: ErrorR,
 		getError: getError,
 		changeError: changeError,
 	};

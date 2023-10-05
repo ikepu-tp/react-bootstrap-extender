@@ -11,7 +11,7 @@ export type ErrorResource = {
 	abstract?: string;
 	title?: string;
 	code?: number;
-	messages?: ErrorMessagesType;
+	messages?: (string | { [s: string]: any })[] | { [s: string]: any };
 };
 export type ErrorMessagesProps = {
 	messages?: (string | { [s: string]: any })[] | (string | { [s: string]: any } | any);

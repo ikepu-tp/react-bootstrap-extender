@@ -1,7 +1,7 @@
 {
   "name": "@ikepu-tp/react-bootstrap-extender",
   "type": "module",
-  "version": "0.9.2",
+  "version": "0.9.3",
   "description": "",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
