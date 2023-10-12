@@ -95,6 +95,7 @@ function ConvertFilter(
 	const filters: string[] = [];
 	Object.keys(Filter).forEach((key: string): void => {
 		const key_filter: keyof FilterType = key as keyof FilterType;
+		if (!Filter[key_filter]) return;
 		if (!key_JP[key] || !key_res[key]) return;
 		let res: string = `${key_JP[key]}`;
 		if (key_res[key][Filter[key_filter] as never]) {
@@ -194,7 +195,7 @@ function FilterElement(
 							)}
 						</Row>
 						{props.children}
-						<Row className="justify-content-end">
+						<Row className="justify-content-end mt-2">
 							<Col sm="auto" className="mt-1">
 								<Button variant="primary" type="button" onClick={onClickUpdate}>
 									絞り込み
