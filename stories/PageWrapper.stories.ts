@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import PageWrapper from './../src/PageWrapper';
+import PageWrapper, { PageWrapperProps } from './../src/PageWrapper';
 
 const meta = {
 	title: 'Wrappers/PageWrapper',
@@ -11,14 +11,20 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+const defaultArgs: PageWrapperProps = {
+	title: 'ページタイトル',
+	breadCrumb: [
+		{
+			link: '#2',
+			text: 'ページ2',
+		},
+	],
+	changeTitle: true,
+	titleSeparator: '-',
+	siteTitle: 'ReactBootstrapExtender',
+};
 export const Normal: Story = {
 	args: {
-		title: 'ページタイトル',
-		breadCrumb: [
-			{
-				link: '#2',
-				text: 'ページ2',
-			},
-		],
+		...defaultArgs,
 	},
 };

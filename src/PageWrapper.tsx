@@ -1,4 +1,4 @@
-import React, { MouseEvent, MouseEventHandler } from 'react';
+import React, { MouseEvent, MouseEventHandler, useEffect } from 'react';
 import { Breadcrumb } from 'react-bootstrap';
 
 export type BreadCrumbType = {
@@ -6,13 +6,22 @@ export type BreadCrumbType = {
 	text: string;
 };
 export type PageWrapperProps = React.PropsWithChildren & {
-	title: string;
+	title?: string;
 	breadCrumb?: BreadCrumbType[];
 	breadCrumbOnClick?: (e: MouseEvent<HTMLAnchorElement>, item: BreadCrumbType) => void;
 	homeText?: React.ReactNode;
 	onClick?: MouseEventHandler<HTMLAnchorElement>;
+	changeTitle?: boolean;
+	siteTitle?: string;
+	titleSeparator?: string;
 };
 export default function PageWrapper(props: PageWrapperProps): JSX.Element {
+	useEffect(() => {
+		let title: string[] = [];
+		if (props.title) title.push(props.title);
+		if (props.siteTitle) title.push(props.siteTitle);
+		document.title = title.join(` ${props.titleSeparator || '-'} `);
+	}, [props.title]);
 	return (
 		<div>
 			<h3>{props.title}</h3>
