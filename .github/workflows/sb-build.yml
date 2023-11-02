@@ -38,6 +38,6 @@ jobs:
           git stash -u
           git fetch --prune
           git checkout -b gh-pages remotes/origin/gh-pages
-          git stash apply stash@{0} --index
+          git stash apply stash@{0}
           git commit -m "build sb"
           git push -u origin gh-pages
