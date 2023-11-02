@@ -28,3 +28,9 @@ export const Normal: Story = {
 		...defaultArgs,
 	},
 };
+export const NotChangeTitle: Story = {
+	args: {
+		...defaultArgs,
+		changeTitle: false,
+	},
+};
