@@ -13,6 +13,7 @@ export type ControlProps = React.DetailedHTMLProps<React.InputHTMLAttributes<HTM
 		afterText?: React.ReactNode[] | React.ReactNode;
 		wrapperClassName?: string;
 		countShow?: boolean;
+		resize?: boolean;
 	};
 export default function Control({
 	label,
@@ -23,6 +24,7 @@ export default function Control({
 	wrapperClassName,
 	onChange,
 	countShow = true,
+	resize = true,
 	...props
 }: ControlProps): JSX.Element {
 	const [Messages, setMessages] = useState<undefined | ErrorMessagesType>();
@@ -43,8 +45,15 @@ export default function Control({
 	}, [formContext.getError('messages')]);
 
 	function onChangeInput(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void {
+		resizeHeight(e);
 		setCount(e.currentTarget.value.length);
 		if (onChange) onChange(e);
+	}
+	function resizeHeight(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void {
+		if (props.as !== 'textarea' || !resize) return;
+		e.currentTarget.style.height = '0px';
+		e.currentTarget.style.minHeight = '0px';
+		e.currentTarget.style.minHeight = `${Math.max(e.currentTarget.scrollHeight + 2, 62)}px`;
 	}
 	return (
 		<InputWrapper
