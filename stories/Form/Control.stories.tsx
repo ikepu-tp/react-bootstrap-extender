@@ -12,72 +12,56 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+const defaultArgs = {
+	label: '選択肢',
+	required: true,
+	name: 'name',
+	countShow: false,
+	type: 'text',
+	autoResize: true,
+};
 export const Normal: Story = {
 	args: {
-		label: '名前',
-		required: true,
-		name: 'name',
-		countShow: false,
-		type: 'text',
-		autoResize: true,
+		...defaultArgs,
 	},
 };
 export const ValidMessage: Story = {
 	args: {
-		label: '名前',
-		required: true,
-		name: 'name',
+		...defaultArgs,
 		validMessage: ['フィードバック'],
 		isValid: true,
-		countShow: false,
-		type: 'text',
 	},
 };
 export const InvalidMessage: Story = {
 	args: {
-		label: '名前',
-		required: true,
-		name: 'name',
+		...defaultArgs,
 		invalidMessage: ['フィードバック'],
 		isInvalid: true,
-		countShow: false,
-		type: 'text',
 	},
 };
 export const CountShow: Story = {
 	args: {
-		label: '名前',
-		required: true,
-		name: 'name',
+		...defaultArgs,
 		countShow: true,
 		maxLength: 50,
-		type: 'text',
 	},
 };
 export const BeforeText: Story = {
 	args: {
-		label: '名前',
-		required: true,
-		name: 'name',
+		...defaultArgs,
 		beforeText: ['Controlの前に', <span className="text-danger">要素を入れられます</span>],
-		type: 'text',
 	},
 };
 export const AfterText: Story = {
 	args: {
-		label: '名前',
-		required: true,
-		name: 'name',
+		...defaultArgs,
 		afterText: ['Controlの後に', <span className="text-danger">要素を入れられます</span>],
-		type: 'text',
 	},
 };
 export const TextArea: Story = {
 	args: {
+		...defaultArgs,
 		as: 'textarea',
-		label: '備考',
-		required: true,
-		name: 'note',
 		countShow: true,
 		maxLength: 50,
 		beforeText: ['Controlの前に', <span className="text-danger">要素を入れられます</span>],
