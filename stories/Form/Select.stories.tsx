@@ -12,63 +12,39 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+const defaultArgs = {
+	label: '選択肢',
+	required: true,
+	name: 'name',
+	pleaseOption: true,
+	pleaseOptionMessage: '選択してください',
+};
 export const Normal: Story = {
-	args: {
-		label: '選択肢',
-		required: true,
-		name: 'name',
-		pleaseOption: true,
-		pleaseOptionMessage: '選択してください',
-	},
+	args: defaultArgs,
 };
 export const ValidMessage: Story = {
 	args: {
-		label: '名前',
-		required: true,
-		name: 'name',
+		...defaultArgs,
 		validMessage: ['フィードバック'],
 		isValid: true,
-		pleaseOption: true,
-		pleaseOptionMessage: '選択してください',
 	},
 };
 export const InvalidMessage: Story = {
 	args: {
-		label: '名前',
-		required: true,
-		name: 'name',
+		...defaultArgs,
 		invalidMessage: ['フィードバック'],
 		isInvalid: true,
-		pleaseOption: true,
-		pleaseOptionMessage: '選択してください',
-	},
-};
-export const CountShow: Story = {
-	args: {
-		label: '名前',
-		required: true,
-		name: 'name',
-		pleaseOption: true,
-		pleaseOptionMessage: '選択してください',
 	},
 };
 export const BeforeText: Story = {
 	args: {
-		label: '名前',
-		required: true,
-		name: 'name',
+		...defaultArgs,
 		beforeText: ['Controlの前に', <span className="text-danger">要素を入れられます</span>],
-		pleaseOption: true,
-		pleaseOptionMessage: '選択してください',
 	},
 };
 export const AfterText: Story = {
 	args: {
-		label: '名前',
-		required: true,
-		name: 'name',
+		...defaultArgs,
 		afterText: ['Controlの後に', <span className="text-danger">要素を入れられます</span>],
-		pleaseOption: true,
-		pleaseOptionMessage: '選択してください',
 	},
 };
