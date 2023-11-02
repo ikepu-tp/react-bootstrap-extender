@@ -88,23 +88,29 @@ export default function Control({
 						</ul>
 					</Form.Control.Feedback>
 				)}
-				<Form.Control.Feedback type="invalid" className="ms-2 mb-2">
-					{invalidMessage && (
-						<ul className="mb-0">
-							{invalidMessage.map(
-								(mes: string): JSX.Element => (
-									<li key={mes}>{mes}</li>
-								)
-							)}
-						</ul>
-					)}
-					{formContext.Error?.messages &&
+				{(invalidMessage ||
+					(formContext.Error?.messages &&
 						props.name &&
 						!Array.isArray(formContext.Error.messages) &&
-						formContext.Error.messages[props.name] && (
-							<ErrorMessages messages={formContext.Error.messages[props.name]} />
+						formContext.Error.messages[props.name])) && (
+					<Form.Control.Feedback type="invalid" className="ms-2 mb-2">
+						{invalidMessage && (
+							<ul className="mb-0">
+								{invalidMessage.map(
+									(mes: string): JSX.Element => (
+										<li key={mes}>{mes}</li>
+									)
+								)}
+							</ul>
 						)}
-				</Form.Control.Feedback>
+						{formContext.Error?.messages &&
+							props.name &&
+							!Array.isArray(formContext.Error.messages) &&
+							formContext.Error.messages[props.name] && (
+								<ErrorMessages messages={formContext.Error.messages[props.name]} />
+							)}
+					</Form.Control.Feedback>
+				)}
 				{afterText &&
 					(Array.isArray(afterText) ? (
 						afterText.map((node: React.ReactNode): JSX.Element => <InputGroup.Text>{node}</InputGroup.Text>)
