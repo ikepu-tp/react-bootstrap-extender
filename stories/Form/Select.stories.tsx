@@ -17,6 +17,8 @@ export const Normal: Story = {
 		label: '選択肢',
 		required: true,
 		name: 'name',
+		pleaseOption: true,
+		pleaseOptionMessage: '選択してください',
 	},
 };
 export const ValidMessage: Story = {
@@ -26,6 +28,8 @@ export const ValidMessage: Story = {
 		name: 'name',
 		validMessage: ['フィードバック'],
 		isValid: true,
+		pleaseOption: true,
+		pleaseOptionMessage: '選択してください',
 	},
 };
 export const InvalidMessage: Story = {
@@ -35,6 +39,8 @@ export const InvalidMessage: Story = {
 		name: 'name',
 		invalidMessage: ['フィードバック'],
 		isInvalid: true,
+		pleaseOption: true,
+		pleaseOptionMessage: '選択してください',
 	},
 };
 export const CountShow: Story = {
@@ -42,6 +48,8 @@ export const CountShow: Story = {
 		label: '名前',
 		required: true,
 		name: 'name',
+		pleaseOption: true,
+		pleaseOptionMessage: '選択してください',
 	},
 };
 export const BeforeText: Story = {
@@ -50,6 +58,8 @@ export const BeforeText: Story = {
 		required: true,
 		name: 'name',
 		beforeText: ['Controlの前に', <span className="text-danger">要素を入れられます</span>],
+		pleaseOption: true,
+		pleaseOptionMessage: '選択してください',
 	},
 };
 export const AfterText: Story = {
@@ -58,5 +68,7 @@ export const AfterText: Story = {
 		required: true,
 		name: 'name',
 		afterText: ['Controlの後に', <span className="text-danger">要素を入れられます</span>],
+		pleaseOption: true,
+		pleaseOptionMessage: '選択してください',
 	},
 };

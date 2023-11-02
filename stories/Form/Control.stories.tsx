@@ -19,6 +19,7 @@ export const Normal: Story = {
 		name: 'name',
 		countShow: false,
 		type: 'text',
+		autoResize: true,
 	},
 };
 export const ValidMessage: Story = {
