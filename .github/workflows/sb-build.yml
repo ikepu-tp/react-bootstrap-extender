@@ -27,15 +27,18 @@ jobs:
       - name: install
         run: yarn install
 
-      - name: build
-        run: yarn build-sb
-
-      - name: push branch
+      - name: git
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git fetch --prune
           git checkout -b gh-pages remotes/origin/gh-pages
+
+      - name: build
+        run: yarn build-sb
+
+      - name: push branch
+        run: |
           git add ./docs
           git commit -m "build sb"
           git push -u origin gh-pages
