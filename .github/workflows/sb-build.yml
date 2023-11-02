@@ -34,10 +34,10 @@ jobs:
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add ./docs
           git stash -u
           git fetch --prune
           git checkout -b gh-pages remotes/origin/gh-pages
-          git stash apply stash@{0}
-          git add ./docs
+          git stash apply stash@{0} --index
           git commit -m "build sb"
           git push -u origin gh-pages
