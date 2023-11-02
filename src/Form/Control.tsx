@@ -103,7 +103,7 @@ export default function Control({
 						<InputGroup.Text>{afterText}</InputGroup.Text>
 					))}
 			</InputGroup>
-			{countShow && (
+			{countShow && whichShowCount(props.type) && (
 				<Form.Text className="d-block text-end">
 					{Count}
 					{props.maxLength && `/${props.maxLength}`}words
@@ -111,4 +111,16 @@ export default function Control({
 			)}
 		</InputWrapper>
 	);
+}
+
+function whichShowCount(type: string | undefined = undefined): boolean {
+	switch (type) {
+		case 'date':
+		case 'datetime':
+		case 'datetime-local':
+		case 'time':
+			return false;
+		default:
+			return true;
+	}
 }
