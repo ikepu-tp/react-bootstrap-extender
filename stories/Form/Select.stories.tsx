@@ -1,24 +1,22 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
-import { Control } from './../../src/Form';
+import { Select } from './../../src/Form';
 
 const meta = {
-	title: 'Forms/Control',
-	component: Control,
+	title: 'Forms/Select',
+	component: Select,
 	tags: ['autodocs'],
 	argTypes: {},
-} satisfies Meta<typeof Control>;
+} satisfies Meta<typeof Select>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Normal: Story = {
 	args: {
-		label: '名前',
+		label: '選択肢',
 		required: true,
 		name: 'name',
-		countShow: false,
-		type: 'text',
 	},
 };
 export const ValidMessage: Story = {
@@ -28,8 +26,6 @@ export const ValidMessage: Story = {
 		name: 'name',
 		validMessage: ['フィードバック'],
 		isValid: true,
-		countShow: false,
-		type: 'text',
 	},
 };
 export const InvalidMessage: Story = {
@@ -39,8 +35,6 @@ export const InvalidMessage: Story = {
 		name: 'name',
 		invalidMessage: ['フィードバック'],
 		isInvalid: true,
-		countShow: false,
-		type: 'text',
 	},
 };
 export const CountShow: Story = {
@@ -48,9 +42,6 @@ export const CountShow: Story = {
 		label: '名前',
 		required: true,
 		name: 'name',
-		countShow: true,
-		maxLength: 50,
-		type: 'text',
 	},
 };
 export const BeforeText: Story = {
@@ -59,7 +50,6 @@ export const BeforeText: Story = {
 		required: true,
 		name: 'name',
 		beforeText: ['Controlの前に', <span className="text-danger">要素を入れられます</span>],
-		type: 'text',
 	},
 };
 export const AfterText: Story = {
@@ -67,19 +57,6 @@ export const AfterText: Story = {
 		label: '名前',
 		required: true,
 		name: 'name',
-		afterText: ['Controlの後に', <span className="text-danger">要素を入れられます</span>],
-		type: 'text',
-	},
-};
-export const TextArea: Story = {
-	args: {
-		as: 'textarea',
-		label: '備考',
-		required: true,
-		name: 'note',
-		countShow: true,
-		maxLength: 50,
-		beforeText: ['Controlの前に', <span className="text-danger">要素を入れられます</span>],
 		afterText: ['Controlの後に', <span className="text-danger">要素を入れられます</span>],
 	},
 };

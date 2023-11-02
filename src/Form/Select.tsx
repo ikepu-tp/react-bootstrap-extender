@@ -1,34 +1,32 @@
-import { Form, FormControlProps, InputGroup } from 'react-bootstrap';
+import { Form, FormSelectProps, InputGroup } from 'react-bootstrap';
 import InputWrapper from './InputWrapper';
-import React, { ChangeEvent, useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { FormContext } from './FormContext';
 import { ErrorMessages, ErrorMessagesType } from './FormWrapper';
 
-export type ControlProps = React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> &
-	FormControlProps & {
+export type SelectProps = FormSelectProps &
+	React.PropsWithChildren & {
 		label: string;
 		validMessage?: string[];
 		invalidMessage?: string[];
 		beforeText?: React.ReactNode[] | React.ReactNode;
 		afterText?: React.ReactNode[] | React.ReactNode;
 		wrapperClassName?: string;
-		countShow?: boolean;
-		autoResize?: boolean;
+		pleaseOption?: boolean;
+		pleaseOptionMessage?: string;
 	};
-export default function Control({
+export default function Select({
 	label,
 	validMessage,
 	invalidMessage,
 	beforeText,
 	afterText,
 	wrapperClassName,
-	onChange,
-	countShow = true,
-	autoResize = true,
+	pleaseOption = true,
+	pleaseOptionMessage = '選択してください',
 	...props
-}: ControlProps): JSX.Element {
+}: SelectProps): JSX.Element {
 	const [Messages, setMessages] = useState<undefined | ErrorMessagesType>();
-	const [Count, setCount] = useState<number>((props.value?.toString || props.defaultValue?.toString || '').length);
 	const formContext = useContext(FormContext);
 
 	useEffect(() => {
@@ -44,17 +42,6 @@ export default function Control({
 		}
 	}, [formContext.getError('messages')]);
 
-	function onChangeInput(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void {
-		resizeHeight(e);
-		setCount(e.currentTarget.value.length);
-		if (onChange) onChange(e);
-	}
-	function resizeHeight(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void {
-		if (props.as !== 'textarea' || !autoResize) return;
-		e.currentTarget.style.height = '0px';
-		e.currentTarget.style.minHeight = '0px';
-		e.currentTarget.style.minHeight = `${Math.max(e.currentTarget.scrollHeight + 2, 62)}px`;
-	}
 	return (
 		<InputWrapper
 			label={label}
@@ -70,13 +57,16 @@ export default function Control({
 					) : (
 						<InputGroup.Text>{beforeText}</InputGroup.Text>
 					))}
-				<Form.Control
+				<Form.Select
 					{...props}
 					placeholder={props.placeholder || label}
+					title={props.title || label}
 					isInvalid={props.isInvalid || (Messages ? true : false)}
 					className={(props.className || '') + (props.isInvalid || (Messages ? true : false) ? ' border-danger' : '')}
-					onChange={onChangeInput}
-				/>
+				>
+					{pleaseOption && <option label={pleaseOptionMessage} className="d-none" />}
+					{props.children}
+				</Form.Select>
 				{validMessage && (
 					<Form.Control.Feedback className="ms-2">
 						<ul>
@@ -118,24 +108,6 @@ export default function Control({
 						<InputGroup.Text>{afterText}</InputGroup.Text>
 					))}
 			</InputGroup>
-			{countShow && whichShowCount(props.type) && (
-				<Form.Text className="d-block text-end">
-					{Count}
-					{props.maxLength && `/${props.maxLength}`}words
-				</Form.Text>
-			)}
 		</InputWrapper>
 	);
-}
-
-function whichShowCount(type: string | undefined = undefined): boolean {
-	switch (type) {
-		case 'date':
-		case 'datetime':
-		case 'datetime-local':
-		case 'time':
-			return false;
-		default:
-			return true;
-	}
 }
