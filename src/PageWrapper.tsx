@@ -49,12 +49,12 @@ function BreadcrumbItem(props: {
 	onClick?: MouseEventHandler<HTMLAnchorElement>;
 }): JSX.Element {
 	function onClick(e: MouseEvent<HTMLAnchorElement>): void {
-		if (props.onClick) {
-			props.onClick(e);
-			return;
-		}
 		if (props.navigate) {
 			props.navigate(e, props.item);
+			return;
+		}
+		if (props.onClick) {
+			props.onClick(e);
 			return;
 		}
 	}
