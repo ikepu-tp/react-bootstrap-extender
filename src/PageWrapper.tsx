@@ -25,7 +25,10 @@ export default function PageWrapper(props: PageWrapperProps): JSX.Element {
 	}, [props.title]);
 
 	function homeOnClick(e: MouseEvent<HTMLAnchorElement>): void {
-		if (props.changeLink) return props.changeLink('/');
+		if (props.changeLink) {
+			e.preventDefault();
+			return props.changeLink('/');
+		}
 		if (props.onClick) return props.onClick(e);
 	}
 	return (
@@ -63,7 +66,10 @@ function BreadcrumbItem(props: {
 }): JSX.Element {
 	function onClick(e: MouseEvent<HTMLAnchorElement>): void {
 		if (props.navigate) return props.navigate(e, props.item);
-		if (props.changeLink) return props.changeLink(props.item.link);
+		if (props.changeLink) {
+			e.preventDefault();
+			return props.changeLink(props.item.link);
+		}
 		if (props.onClick) return props.onClick(e);
 	}
 	return (
