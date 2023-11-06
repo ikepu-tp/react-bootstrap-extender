@@ -11,7 +11,7 @@ export type PageWrapperProps = React.DetailedHTMLProps<React.HTMLAttributes<HTML
 		breadCrumb?: BreadCrumbType[];
 		breadCrumbOnClick?: (e: MouseEvent<HTMLAnchorElement>, item: BreadCrumbType) => void;
 		homeText?: React.ReactNode;
-		onClick?: MouseEventHandler<HTMLAnchorElement>;
+		onAnchorClick?: MouseEventHandler<HTMLAnchorElement>;
 		changeLink?: (link: string) => void;
 		changeTitle?: boolean;
 		siteTitle?: string;
@@ -22,7 +22,7 @@ export default function PageWrapper({
 	breadCrumb,
 	breadCrumbOnClick,
 	homeText,
-	onClick,
+	onAnchorClick,
 	changeLink,
 	changeTitle,
 	siteTitle,
@@ -42,7 +42,7 @@ export default function PageWrapper({
 			e.preventDefault();
 			return changeLink('/');
 		}
-		if (onClick) return onClick(e);
+		if (onAnchorClick) return onAnchorClick(e);
 	}
 	return (
 		<>
@@ -59,7 +59,7 @@ export default function PageWrapper({
 									key={item.text}
 									item={item}
 									navigate={breadCrumbOnClick}
-									onClick={onClick}
+									onAnchorClick={onAnchorClick}
 									changeLink={changeLink}
 								/>
 							)
@@ -76,7 +76,7 @@ export default function PageWrapper({
 function BreadcrumbItem(props: {
 	item: BreadCrumbType;
 	navigate?: (e: MouseEvent<HTMLAnchorElement>, item: BreadCrumbType) => void;
-	onClick?: MouseEventHandler<HTMLAnchorElement>;
+	onAnchorClick?: MouseEventHandler<HTMLAnchorElement>;
 	changeLink?: (link: string) => void;
 }): JSX.Element {
 	function onClick(e: MouseEvent<HTMLAnchorElement>): void {
@@ -85,7 +85,7 @@ function BreadcrumbItem(props: {
 			e.preventDefault();
 			return props.changeLink(props.item.link);
 		}
-		if (props.onClick) return props.onClick(e);
+		if (props.onAnchorClick) return props.onAnchorClick(e);
 	}
 	return (
 		<Breadcrumb.Item href={props.item.link} onClick={onClick}>
