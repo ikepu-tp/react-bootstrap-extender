@@ -5,56 +5,71 @@ export type BreadCrumbType = {
 	link: string;
 	text: string;
 };
-export type PageWrapperProps = React.PropsWithChildren & {
-	title?: string;
-	breadCrumb?: BreadCrumbType[];
-	breadCrumbOnClick?: (e: MouseEvent<HTMLAnchorElement>, item: BreadCrumbType) => void;
-	homeText?: React.ReactNode;
-	onClick?: MouseEventHandler<HTMLAnchorElement>;
-	changeLink?: (link: string) => void;
-	changeTitle?: boolean;
-	siteTitle?: string;
-	titleSeparator?: string;
-};
-export default function PageWrapper(props: PageWrapperProps): JSX.Element {
+export type PageWrapperProps = React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> &
+	React.PropsWithChildren & {
+		title?: string;
+		breadCrumb?: BreadCrumbType[];
+		breadCrumbOnClick?: (e: MouseEvent<HTMLAnchorElement>, item: BreadCrumbType) => void;
+		homeText?: React.ReactNode;
+		onClick?: MouseEventHandler<HTMLAnchorElement>;
+		changeLink?: (link: string) => void;
+		changeTitle?: boolean;
+		siteTitle?: string;
+		titleSeparator?: string;
+	};
+export default function PageWrapper({
+	title,
+	breadCrumb,
+	breadCrumbOnClick,
+	homeText,
+	onClick,
+	changeLink,
+	changeTitle,
+	siteTitle,
+	titleSeparator,
+	children,
+	...props
+}: PageWrapperProps): JSX.Element {
 	useEffect(() => {
-		let title: string[] = [];
-		if (props.title) title.push(props.title);
-		if (props.siteTitle) title.push(props.siteTitle);
-		document.title = title.join(` ${props.titleSeparator || '-'} `);
-	}, [props.title]);
+		let titles: string[] = [];
+		if (title) titles.push(title);
+		if (siteTitle) titles.push(siteTitle);
+		document.title = titles.join(` ${titleSeparator || '-'} `);
+	}, [title]);
 
 	function homeOnClick(e: MouseEvent<HTMLAnchorElement>): void {
-		if (props.changeLink) {
+		if (changeLink) {
 			e.preventDefault();
-			return props.changeLink('/');
+			return changeLink('/');
 		}
-		if (props.onClick) return props.onClick(e);
+		if (onClick) return onClick(e);
 	}
 	return (
-		<div>
-			<h3>{props.title}</h3>
-			{props.breadCrumb && (
-				<Breadcrumb className="my-2">
-					<Breadcrumb.Item href="/" onClick={homeOnClick}>
-						{props.homeText || 'HOME'}
-					</Breadcrumb.Item>
-					{props.breadCrumb.map(
-						(item: BreadCrumbType): JSX.Element => (
-							<BreadcrumbItem
-								key={item.text}
-								item={item}
-								navigate={props.breadCrumbOnClick}
-								onClick={props.onClick}
-								changeLink={props.changeLink}
-							/>
-						)
-					)}
-					<Breadcrumb.Item active>{props.title}</Breadcrumb.Item>
-				</Breadcrumb>
-			)}
-			{props.children}
-		</div>
+		<>
+			<div {...props}>
+				<h3>{title}</h3>
+				{breadCrumb && (
+					<Breadcrumb className="my-2">
+						<Breadcrumb.Item href="/" onClick={homeOnClick}>
+							{homeText || 'HOME'}
+						</Breadcrumb.Item>
+						{breadCrumb.map(
+							(item: BreadCrumbType): JSX.Element => (
+								<BreadcrumbItem
+									key={item.text}
+									item={item}
+									navigate={breadCrumbOnClick}
+									onClick={onClick}
+									changeLink={changeLink}
+								/>
+							)
+						)}
+						<Breadcrumb.Item active>{title}</Breadcrumb.Item>
+					</Breadcrumb>
+				)}
+			</div>
+			{children}
+		</>
 	);
 }
 
