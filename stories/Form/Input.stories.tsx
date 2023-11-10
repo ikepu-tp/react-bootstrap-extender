@@ -62,6 +62,10 @@ export const AfterText: Story = {
 export const TextArea: Story = {
 	args: {
 		...defaultArgs,
+		defaultValue: `test
+test2
+test3
+test4`,
 		as: 'textarea',
 		countShow: true,
 		maxLength: 50,

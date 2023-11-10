@@ -1,7 +1,8 @@
 import { Form, FormControlProps, InputGroup } from 'react-bootstrap';
-import React, { ChangeEvent, useContext, useEffect, useState } from 'react';
+import React, { ChangeEvent, useContext, useEffect, useRef, useState } from 'react';
 import { FormContext } from './FormContext';
 import { ErrorMessages, ErrorMessagesType } from './FormWrapper';
+import { createKey } from '..';
 
 export type InputProps = React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> &
 	FormControlProps &
@@ -24,7 +25,13 @@ export default function Input({
 	const [Messages, setMessages] = useState<undefined | ErrorMessagesType>();
 	const [Count, setCount] = useState<number>((props.value?.toString() || props.defaultValue?.toString() || '').length);
 	const formContext = useContext(FormContext);
+	const IdRef = useRef<string>(props.id || createKey());
 
+	useEffect(() => {
+		const element = document.getElementById(IdRef.current) as HTMLInputElement | HTMLTextAreaElement | null;
+		if (!element || ['INPUT', 'TEXTAREA'].indexOf(element.tagName) === -1) return;
+		resizeHeight(element);
+	}, []);
 	useEffect(() => {
 		const messages = formContext.getError('messages');
 		if (messages === undefined) {
@@ -38,26 +45,27 @@ export default function Input({
 		}
 	}, [formContext.getError('messages')]);
 
-	function onChangeInput(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void {
-		resizeHeight(e);
+	function handleChange(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void {
+		resizeHeight(e.currentTarget);
 		setCount(e.currentTarget.value.length);
 		if (onChange) onChange(e);
 	}
-	function resizeHeight(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void {
+	function resizeHeight(element: HTMLInputElement | HTMLTextAreaElement): void {
 		if (props.as !== 'textarea' || !autoResize) return;
-		e.currentTarget.style.height = '0px';
-		e.currentTarget.style.minHeight = '0px';
-		e.currentTarget.style.minHeight = `${Math.max(e.currentTarget.scrollHeight + 2, 62)}px`;
+		element.style.height = '0px';
+		element.style.minHeight = '0px';
+		element.style.minHeight = `${Math.max(element.scrollHeight + 2, 62)}px`;
 	}
 	return (
 		<>
 			<InputGroupWrapper beforeText={beforeText} afterText={afterText}>
 				<Form.Control
 					{...props}
+					id={IdRef.current}
 					placeholder={props.placeholder}
 					isInvalid={props.isInvalid || (Messages ? true : false)}
 					className={(props.className || '') + (props.isInvalid || (Messages ? true : false) ? ' border-danger' : '')}
-					onChange={onChangeInput}
+					onChange={handleChange}
 				/>
 				{validMessage && (
 					<Form.Control.Feedback className="ms-2">

@@ -16,7 +16,7 @@ export default function Control({ label, wrapperClassName, description, ...props
 			className={wrapperClassName}
 			description={description}
 		>
-			<Input {...props} />
+			<Input {...props} placeholder={props.placeholder || label} />
 		</InputWrapper>
 	);
 }
