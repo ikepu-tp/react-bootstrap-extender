@@ -52,9 +52,9 @@ export default function Input({
 	}
 	function resizeHeight(element: HTMLInputElement | HTMLTextAreaElement): void {
 		if (props.as !== 'textarea' || !autoResize) return;
-		element.style.height = '0px';
-		element.style.minHeight = '0px';
-		element.style.minHeight = `${Math.max(element.scrollHeight + 2, 62)}px`;
+		element.style.minHeight = `100px`;
+		element.style.height = `${element.scrollHeight - 100}px`;
+		element.style.height = `${element.scrollHeight + 2}px`;
 	}
 	return (
 		<>
