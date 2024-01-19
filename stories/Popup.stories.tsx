@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import Popup from './../src/Popup';
+import Popup, { PopupProps } from './../src/Popup';
 import React, { PropsWithChildren, useEffect, useState } from 'react';
 
 const meta = {
@@ -18,17 +18,24 @@ export const Normal: Story = {
 		header: 'タイトル',
 		footer: 'フッター',
 		children: '子要素',
+		showToggle: undefined,
+	},
+};
+export const HasShowToggle: Story = {
+	args: {
+		show: false,
+		header: 'タイトル',
+		footer: 'フッター',
+		children: '子要素',
+		showToggle: <button className="btn btn-secondary">表示</button>,
 	},
 };
 
-function PopupComponent({
-	show,
-	...props
-}: PropsWithChildren & { show: boolean; header?: string; footer?: string }): JSX.Element {
-	const [Show, setShow] = useState<boolean>(show);
+function PopupComponent({ show, ...props }: PopupProps): JSX.Element {
+	const [Show, setShow] = useState<boolean>(false);
 
 	useEffect(() => {
-		setShow(show);
+		if (show !== undefined) setShow(show);
 	}, [show]);
 	function changeShow(): void {
 		setShow(!Show);
