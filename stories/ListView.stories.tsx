@@ -40,5 +40,6 @@ export const Normal: Story = {
 			children: 'child filter',
 			except: ['keyword'],
 		},
+		moveToList: false,
 	},
 };

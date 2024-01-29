@@ -32,6 +32,7 @@ export type ListViewProps<ItemProps = any, ItemResource = any, Filter = FilterTy
 	filter?: Filter & FilterType;
 	ConvertFilter?: (Filter: Filter) => string[];
 	FilterProps?: FilterProps;
+	moveToList?: boolean;
 };
 export default function ListView(props: ListViewProps): JSX.Element {
 	const [Page, setPage] = useState<number>(1);
@@ -50,7 +51,8 @@ export default function ListView(props: ListViewProps): JSX.Element {
 		const payloads = await props.getItems({ page: Page, ...Filter });
 		if (!payloads) return;
 		setPayloads({ ...{}, ...payloads });
-		if (WrapperRef.current) window.scroll({ top: WrapperRef.current.getBoundingClientRect().top + window.pageYOffset });
+		if (WrapperRef.current && props.moveToList)
+			window.scroll({ top: WrapperRef.current.getBoundingClientRect().top + window.pageYOffset });
 	}
 	if (!Payloads) return <></>;
 	return (
