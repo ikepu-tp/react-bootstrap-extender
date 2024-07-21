@@ -8,8 +8,11 @@
 		left: 0;
 		z-index: 1;
 	}
-	thead tr:last-of-type th:first-of-type {
+	thead tr th:first-of-type {
 		z-index: 2;
+	}
+	thead tr:last-of-type th:first-of-type {
+		z-index: 3;
 	}
 	tbody td {
 		padding: 10px;
