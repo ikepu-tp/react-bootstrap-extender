@@ -59,7 +59,6 @@ export default function Select({
 					))}
 				<Form.Select
 					{...props}
-					placeholder={props.placeholder || label}
 					title={props.title || label}
 					isInvalid={props.isInvalid || (Messages ? true : false)}
 					className={(props.className || '') + (props.isInvalid || (Messages ? true : false) ? ' border-danger' : '')}
