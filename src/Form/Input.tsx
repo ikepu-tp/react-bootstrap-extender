@@ -11,19 +11,23 @@ export type InputProps = React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLI
 		invalidMessage?: string[];
 		countShow?: boolean;
 		autoResize?: boolean;
+		value?: string | string[] | number | null;
+		defaultValue?: string | string[] | number | null;
 	};
 export default function Input({
 	validMessage,
 	invalidMessage,
 	beforeText,
 	afterText,
+	value,
+	defaultValue,
 	onChange,
 	countShow = true,
 	autoResize = true,
 	...props
 }: InputProps): JSX.Element {
 	const [Messages, setMessages] = useState<undefined | ErrorMessagesType>();
-	const [Count, setCount] = useState<number>((props.value?.toString() || props.defaultValue?.toString() || '').length);
+	const [Count, setCount] = useState<number>((value?.toString() || defaultValue?.toString() || '').length);
 	const formContext = useContext(FormContext);
 	const IdRef = useRef<string>(props.id || createKey());
 
@@ -61,6 +65,8 @@ export default function Input({
 			<InputGroupWrapper beforeText={beforeText} afterText={afterText}>
 				<Form.Control
 					{...props}
+					value={value || undefined}
+					defaultValue={defaultValue || undefined}
 					id={IdRef.current}
 					placeholder={props.placeholder}
 					isInvalid={props.isInvalid || (Messages ? true : false)}
