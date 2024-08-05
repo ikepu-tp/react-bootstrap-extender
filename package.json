@@ -1,7 +1,7 @@
 {
   "name": "@ikepu-tp/react-bootstrap-extender",
   "type": "module",
-  "version": "1.4.6",
+  "version": "1.4.7",
   "description": "",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
@@ -12,7 +12,7 @@
     "format": "prettier -w \"./src/**/*.{js,ts}\"",
     "build": "yarn format && yarn build-js && yarn build-css",
     "sb": "storybook dev -p 6006",
-    "build-js": "tsc && vite build",
+    "build-js": "vite build && tsc",
     "build-sb": "storybook build -o docs/ && touch ./docs/.nojekyll",
     "build-scss": "sass --style=compressed src/scss/style.scss:dist/css/style.css",
     "build-postcss": "# postcss css/*.css -r",
