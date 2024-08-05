@@ -1,18 +1,22 @@
 {
   "name": "@ikepu-tp/react-bootstrap-extender",
   "type": "module",
-  "version": "1.4.5",
+  "version": "1.4.6",
   "description": "",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
   "types": "./dist/esm/index.d.ts",
-  "style": "./dist/style.css",
+  "style": "./dist/css/style.css",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "format": "prettier -w \"./src/**/*.{js,ts}\"",
-    "build": "yarn format && vite build && tsc",
+    "build": "yarn format && yarn build-js && yarn build-css",
     "sb": "storybook dev -p 6006",
-    "build-sb": "storybook build -o docs/ && touch ./docs/.nojekyll"
+    "build-js": "tsc && vite build",
+    "build-sb": "storybook build -o docs/ && touch ./docs/.nojekyll",
+    "build-scss": "sass --style=compressed src/scss/style.scss:dist/css/style.css",
+    "build-postcss": "# postcss css/*.css -r",
+    "build-css": "yarn build-scss && yarn build-postcss"
   },
   "repository": {
     "type": "git",
@@ -62,7 +66,11 @@
     "@storybook/react": "^7.4.5",
     "@storybook/react-vite": "^7.4.5",
     "@storybook/testing-library": "^0.2.1",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.40",
+    "postcss-cli": "^11.0.0",
     "prettier": "^3.0.3",
+    "sass": "^1.77.8",
     "storybook": "^7.4.5",
     "typescript": "^5.2.2",
     "vite": "^4.4.9"

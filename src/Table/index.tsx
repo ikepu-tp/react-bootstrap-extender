@@ -1,13 +1,13 @@
 import React from 'react';
 import { TableProps as BaseTableProps, Table as BaseTable } from 'react-bootstrap';
-import './style.css';
+import './../scss/style.css';
 
 export type TableProps = BaseTableProps & {
 	fixedTitle?: boolean;
-	wrapperHeight?:string
+	wrapperHeight?: string;
 };
-export default function Table({ fixedTitle,wrapperHeight, ...props }: TableProps): React.ReactNode {
-	if(!fixedTitle) return <BaseTable {...props} />;
+export default function Table({ fixedTitle, wrapperHeight, ...props }: TableProps): React.ReactNode {
+	if (!fixedTitle) return <BaseTable {...props} />;
 
 	const WrapperStyle: React.CSSProperties = {
 		height: wrapperHeight,
