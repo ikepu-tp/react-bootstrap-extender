@@ -3,11 +3,17 @@ import { TableProps as BaseTableProps, Table as BaseTable } from 'react-bootstra
 import './../scss/style.css';
 
 export type TableProps = BaseTableProps & {
+	noWrap?: boolean;
 	fixedTitle?: boolean;
 	wrapperHeight?: string;
 };
 export default function Table({ fixedTitle, wrapperHeight, ...props }: TableProps): React.ReactNode {
-	if (!fixedTitle) return <BaseTable {...props} />;
+	if (!fixedTitle)
+		return (
+			<div className={`${props.noWrap && 'overflow-auto'}`}>
+				<BaseTable {...props} className={`${props.className || ''}  ${props.noWrap ? 'tableLayout-noWrap' : ''}`} />
+			</div>
+		);
 
 	const WrapperStyle: React.CSSProperties = {
 		height: wrapperHeight,
@@ -17,7 +23,10 @@ export default function Table({ fixedTitle, wrapperHeight, ...props }: TableProp
 		<>
 			<div className={'all-on-screen'} style={WrapperStyle}>
 				<div className={'fixed-table__wrapper'}>
-					<BaseTable {...props} className={`${props.className || ''} fixed-table`} />
+					<BaseTable
+						{...props}
+						className={`${props.className || ''} fixed-table ${props.noWrap ? 'tableLayout-noWrap' : ''}`}
+					/>
 				</div>
 			</div>
 		</>

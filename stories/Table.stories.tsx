@@ -14,8 +14,9 @@ type Story = StoryObj<typeof meta>;
 
 export const Normal: Story = {
 	args: {
+		noWrap: false,
 		fixedTitle: false,
-		wrapperHeight: '100px',
+		wrapperHeight: '150px',
 		children: <NormalChildren />,
 	},
 };

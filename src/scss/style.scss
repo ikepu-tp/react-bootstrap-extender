@@ -26,6 +26,13 @@
 	max-width: 100vw;
 }
 
+.tableLayout-noWrap {
+	th,
+	td {
+		white-space: nowrap;
+	}
+}
+
 .all-on-screen {
 	max-height: calc(90vh - 200px);
 	max-width: calc(90vw - 60px);
